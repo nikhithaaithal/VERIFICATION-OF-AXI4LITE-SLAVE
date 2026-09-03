@@ -17,18 +17,18 @@ class axi_scoreboard extends uvm_scoreboard;
 
  trans inp;
  trans out;
- bit [31:0] mem [0:15];
+ bit [31:0] mem [int];
 
  task run_phase(uvm_phase phase);
  forever begin
   inp_fifo.get(inp);
   out_fifo.get(out);
-  ref_model(inp);
+  checker_logic(inp);
   check_res(out);
  end
  endtask
 
- task ref_model(trans t);
+ task checker_logic(trans t);
   if(!vif.ARESETn)
    begin
    t.AWREADY = 0;
@@ -44,12 +44,12 @@ class axi_scoreboard extends uvm_scoreboard;
    end
   else 
    begin
-    write(t);
-    read(t);  
+    write_op(t);
+    read_op(t);  
    end
  endtask
 
-  task write (trans t);
+  task write_op (trans t);
 
    if(t.AWADDR[1:0] !=2'b00)
      t.BRESP = 2'b10;
@@ -63,13 +63,12 @@ class axi_scoreboard extends uvm_scoreboard;
       for(int i=0;i<4; i++)
        begin
         if(t.WSTRB[i])
-        //mem[t.AWADDR/4][i*8 +:8] = t.WDATA[i*8 +: 8];
         mem[t.AWADDR[5:2]][i*8 +:8] = t.WDATA[i*8 +: 8];
       end
      end
   endtask
 
-  task read(trans t);
+  task read_op(trans t);
 
      if(t.ARADDR[1:0] != 2'b00)
       begin
@@ -89,7 +88,6 @@ class axi_scoreboard extends uvm_scoreboard;
    else
      begin
       t.RRESP   = 2'b00;
-      //t.RDATA   = mem[t.ARADDR/4];
       t.RDATA   = mem[t.ARADDR[5:2]];
      end
   endtask

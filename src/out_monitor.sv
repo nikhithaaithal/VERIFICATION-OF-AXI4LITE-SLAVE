@@ -14,11 +14,36 @@ class axi_out_monitor extends uvm_monitor;
    mon_port_wr=new("mon_port_wr",this);
    mon_port_rd=new("mon_port_rd",this);
  endfunction
+
 task run_phase (uvm_phase phase);
 forever begin
  @(vif.mon_out_cb);
+   
+ fork
+  begin
+   if(vif.mon_out_cb.AWREADY && vif.mon_out_cb.AWVALID)
+    begin
+     do
+     @(vif.mon_out_cb);
+     while(!(vif.mon_out_cb.WVALID && vif.mon_out_cb.WREADY))
+    end
+   end
+  begin
+   if(vif.mon_out_cb.WVALID && vif.mon_out_cb.WREADY)
+    begin
+     do
+     @(vif.mon_out_cb);
+     while(!(vif.mon_out_cb.AWREADY && vif.mon_out_cb.AWVALID))
+    end
+   end
+ join
+ if(vif.mon_out_cb.ARREADY && vif.mon_out_cb.ARVALID)
+    begin
+     mon.RDATA    = vif.mon_out_cb.RDATA;
+     mon.RRESP    = vif.mon_out_cb.RRESP;
+    end
 
-  $display(" Output monitor");
+/*
   if(vif.mon_out_cb.AWREADY && vif.mon_out_cb.WREADY && vif.mon_out_cb.AWVALID && vif.mon_out_cb.WVALID)
    begin
      mon=trans::type_id::create("mon",this);
@@ -34,6 +59,7 @@ forever begin
     `uvm_info("OUTPUT_MONITOR",$sformatf("OUTPUT MONITOR\n%s",mon.sprint()),UVM_NONE)
      mon_port_rd.write(mon);
    end
+*/
 end
 endtask
 endclass

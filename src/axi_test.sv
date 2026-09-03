@@ -29,6 +29,7 @@ class write extends axi_test;
    phase.raise_objection(this);
    seq1=axi_sequence::type_id::create("seq1");
    seq1.start(env.agt1.seqr);
+   #20;
    phase.drop_objection(this);
   endtask
 endclass

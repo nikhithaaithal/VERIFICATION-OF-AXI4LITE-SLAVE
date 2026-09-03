@@ -15,6 +15,7 @@ function void build_phase(uvm_phase phase);
 task run_phase(uvm_phase phase);
 forever begin
   seq_item_port.get_next_item(req);
+  $display("driver started");
   drive(req);
  `uvm_info("DRIVER",$sformatf("DRIVER\n%s",req.sprint()),UVM_NONE)
   seq_item_port.item_done();

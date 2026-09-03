@@ -2,7 +2,9 @@ class axi_out_monitor extends uvm_monitor;
  `uvm_component_utils(axi_out_monitor)
   trans mon;
   uvm_analysis_port #(trans) mon_port;
-   virtual axi_interface.MON_OUT vif;
+  virtual axi_interface.MON_OUT vif;
+  bit write_op;
+  bit read_op;
  function new(string name = "axi_out_monitor", uvm_component parent);
    super.new(name,parent);
  endfunction
@@ -11,28 +13,35 @@ class axi_out_monitor extends uvm_monitor;
    if(!uvm_config_db#(virtual axi_interface )::get( this,"","interface",vif))
     `uvm_fatal(get_type_name(),"Output monitor failed")
    mon_port=new("mon_port",this);
+ 
  endfunction
 task run_phase (uvm_phase phase);
 forever begin
  @(vif.mon_out_cb);
-
-  $display(" Output monitor");
-  if(vif.mon_out_cb.AWREADY && vif.mon_out_cb.WREADY && vif.mon_out_cb.AWVALID && vif.mon_out_cb.WVALID)
-   begin
-     mon=trans::type_id::create("mon",this);
-     mon.BRESP    =  vif.mon_out_cb.BRESP;
-    `uvm_info("OUTPUT_MONITOR",$sformatf("OUTPUT MONITOR\n%s",mon.sprint()),UVM_NONE)
-     mon_port.write(mon);
-   end
-  if(vif.mon_out_cb.ARREADY && vif.mon_out_cb.ARVALID)
-   begin
-     mon=trans::type_id::create("mon",this);
-     mon.RDATA    = vif.mon_out_cb.RDATA;
-     mon.RRESP    = vif.mon_out_cb.RRESP;
-    `uvm_info("OUTPUT_MONITOR",$sformatf("OUTPUT MONITOR\n%s",mon.sprint()),UVM_NONE)
-     mon_port.write(mon);
-   end
- 
+ mon=trans::type_id::create("mon",this);
+ collect_data();
+ if(write_op || read_op)
+  begin
+   mon_port.write(mon);
+   write_op =0;
+   read_op=0;
+  end
 end
 endtask
+
+task collect_data ();
+ if(vif.mon_out_cb.BREADY && vif.mon_out_cb.BVALID)
+  begin
+   write_op=1;
+   mon.BRESP    =  vif.mon_out_cb.BRESP;
+  end
+if(vif.mon_out_cb.RREADY && vif.mon_out_cb.RVALID)
+  begin
+   read_op=1;
+   mon.RRESP    =  vif.mon_out_cb.RRESP;
+   mon.RDATA    = vif.mon_out_cb.RDATA;
+  end
+endtask
+
+
 endclass

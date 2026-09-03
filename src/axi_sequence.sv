@@ -6,7 +6,7 @@ class axi_sequence extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-  assert(req.randomize() with {wait_a ==0; wait_d ==0; AWVALID ==1;WVALID ==1; flag ==2'b01; AWADDR == 32'd24; WSTRB== 4'b1111;});
+  assert(req.randomize() with {wait_a ==1; wait_d ==2; AWVALID ==1;WVALID ==1; flag ==2'b01; AWADDR == 32'd24; WSTRB== 4'b1111;});
   finish_item(req);
  endtask
 endclass
@@ -325,7 +325,7 @@ class prot extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-  assert(req.randomize() with {wait_a == 0; wait_d == 0; AWPROT =3'b4; flag == 2'b11; AWVALID ==1;AWADDR ==32'd12;});
+  assert(req.randomize() with {wait_a == 0; wait_d == 0; AWPROT ==3'd4; flag == 2'b11; AWVALID ==1;AWADDR ==32'd12;});
   finish_item(req);
  endtask
 endclass
