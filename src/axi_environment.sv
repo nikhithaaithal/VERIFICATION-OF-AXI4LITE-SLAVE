@@ -39,5 +39,3 @@ class axi_environment extends uvm_env;
  endfunction
 
 endclass
-
-

@@ -10,7 +10,7 @@ class axi_out_monitor extends uvm_monitor;
  endfunction
  function void build_phase(uvm_phase phase);
    super.build_phase(phase);
-   if(!uvm_config_db#(virtual axi_interface )::get( this,"","interface",vif))
+   if(!uvm_config_db#(virtual axi_interface.MON_OUT )::get( this,"","interface",vif))
     `uvm_fatal(get_type_name(),"Output monitor failed")
    mon_port=new("mon_port",this);
  
@@ -30,16 +30,18 @@ end
 endtask
 
 task collect_data ();
- if(vif.mon_out_cb.BREADY && vif.mon_out_cb.BVALID)
+  if(vif.mon_out_cb.BREADY && vif.mon_out_cb.BVALID)
   begin
    write_op=1;
    mon.BRESP    =  vif.mon_out_cb.BRESP;
+    mon.flag[0]= 1;
   end
 if(vif.mon_out_cb.RREADY && vif.mon_out_cb.RVALID)
   begin
    read_op=1;
    mon.RRESP    =  vif.mon_out_cb.RRESP;
    mon.RDATA    = vif.mon_out_cb.RDATA;
+   mon.flag[1]= 1;
   end
 endtask
 

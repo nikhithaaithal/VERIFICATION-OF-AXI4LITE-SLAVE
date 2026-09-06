@@ -35,7 +35,6 @@ class axi_subscriber extends uvm_subscriber #(trans);
  endfunction
  function void write (trans t);
   tr=t;
-  `uvm_info("SUBSCRIBER", $sformatf("Received transaction:\n%s", tr.sprint()), UVM_LOW)
    axi_cg.sample();
  endfunction
 endclass
