@@ -21,6 +21,7 @@ class axi_scoreboard extends uvm_scoreboard;
  forever begin
   inp_fifo.get(inp);
   out_fifo.get(out);
+   //`uvm_info("SCR",$sformatf("ARADDR = %D",inp.ARADDR), UVM_NONE)
   checker_logic(inp);
   check_res(out);
  end
@@ -61,17 +62,17 @@ class axi_scoreboard extends uvm_scoreboard;
      if(t.ARADDR > 32'h3C )
       begin
        t.RRESP   = 2'b11;
-       t.RDATA    = 0;
+       //t.RDATA    = 0;
       end
     else if(t.ARADDR>= 32'h34 && t.ARADDR <= 32'h38)
       begin
        t.RRESP   = 2'b10;
-       t.RDATA    = 0;
+       //t.RDATA    = 0;
       end
     else if(t.ARADDR[1:0] != 2'b00)
       begin
        t.RRESP   = 2'b10;
-       t.RDATA    = 0;
+       //t.RDATA    = 0;
       end
    else
      begin
@@ -83,7 +84,7 @@ class axi_scoreboard extends uvm_scoreboard;
  task check_res(trans ch);
    if(inp.flag[0] && ch.flag[0] ) begin
     if(ch.BRESP == inp.BRESP) begin
-      `uvm_info(get_type_name(), $sformatf("BRESP correct: BRESP = %0d, exp_BRESP=%0d", ch.BRESP, inp.BRESP), UVM_LOW)
+      `uvm_info(get_type_name(), $sformatf("BRESP correct: BRESP = %0d, exp_BRESP=%0d wstrb =%d", ch.BRESP, inp.BRESP,inp.WSTRB), UVM_LOW)
     end
     else begin
       `uvm_error(get_type_name(), $sformatf("WRONG BRESP: BRESP = %0d, exp_BRESP=%0d", ch.BRESP, inp.BRESP))
@@ -93,7 +94,7 @@ class axi_scoreboard extends uvm_scoreboard;
    if(inp.flag[1] && ch.flag[1])begin
      
     if(ch.RDATA == inp.RDATA) begin
-        `uvm_info(get_type_name(), $sformatf("RDATA correct: RDATA = %0d, exp_RDATA=%0d", ch.RDATA, inp.RDATA), UVM_LOW)
+      `uvm_info(get_type_name(), $sformatf("RDATA correct: RDATA = %0d, exp_RDATA=%0d", ch.RDATA, inp.RDATA), UVM_LOW)
     end
     else 
       `uvm_error(get_type_name(), $sformatf("WRONG RDATA: RDATA = %0d, exp_RDATA=%0d, ARADDR= %d", ch.RDATA, inp.RDATA,inp.ARADDR))

@@ -119,6 +119,6 @@ task rdc(trans t);
   while(!vif.drv_cb.RVALID);
   t.RRESP = vif.drv_cb.RRESP;
   vif.drv_cb.RREADY <= 1'b0;
-  $display("[%0t] RDC: RREADY received", $time);
+  $display("[%0t] RDC: RVALID received", $time);
 endtask
 endclass

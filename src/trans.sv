@@ -49,12 +49,3 @@ function new(string name="trans");
  super.new(name);
 endfunction
 endclass
-
-
-
-
-
-
-
-
-
