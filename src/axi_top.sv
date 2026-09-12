@@ -1,5 +1,6 @@
 `include "defines.svh"
 `include "axi_interface.sv"
+`include "axi4_lite_slave.v"
 `include "axi_package.sv"
 module top();
  import uvm_pkg::*;

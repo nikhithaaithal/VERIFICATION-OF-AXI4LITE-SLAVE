@@ -21,7 +21,6 @@ class axi_scoreboard extends uvm_scoreboard;
  forever begin
   inp_fifo.get(inp);
   out_fifo.get(out);
-   //`uvm_info("SCR",$sformatf("ARADDR = %D",inp.ARADDR), UVM_NONE)
   checker_logic(inp);
   check_res(out);
  end
@@ -67,12 +66,12 @@ class axi_scoreboard extends uvm_scoreboard;
     else if(t.ARADDR>= 32'h34 && t.ARADDR <= 32'h38)
       begin
        t.RRESP   = 2'b10;
-       //t.RDATA    = 0;
+       t.RDATA    = 0;
       end
     else if(t.ARADDR[1:0] != 2'b00)
       begin
        t.RRESP   = 2'b10;
-       //t.RDATA    = 0;
+       t.RDATA    = 0;
       end
    else
      begin
