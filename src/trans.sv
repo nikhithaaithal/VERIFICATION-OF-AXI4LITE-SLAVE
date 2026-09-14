@@ -11,8 +11,8 @@ class trans extends uvm_sequence_item;
  rand logic RREADY;
  rand logic [2:0] AWPROT;
  rand logic [2:0] ARPROT;
- rand bit [1:0] wait_a;
- rand bit [1:0] wait_d;
+ rand bit [3:0] wait_a;
+ rand bit [3:0] wait_d;
  rand bit [1:0] flag;
 
  logic AWREADY;

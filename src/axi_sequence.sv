@@ -6,7 +6,7 @@ class axi_sequence extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a ==2; wait_d ==1; AWVALID ==1;WVALID ==1; flag ==2'b01; AWADDR == 32'd24; WSTRB== 4'b1111;});
+   assert(req.randomize() with {wait_a ==8; wait_d ==1; AWVALID ==1;WVALID ==1; flag ==2'b01; AWADDR == 32'd24; WSTRB== 4'b1111;});
   finish_item(req);
  endtask
 endclass
@@ -19,7 +19,7 @@ class read_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a == 1; wait_d == 2; ARVALID ==1;flag == 2'b10; ARADDR == 32'd24;});
+   assert(req.randomize() with {wait_a == 6; wait_d == 2; ARVALID ==1;flag == 2'b10; ARADDR == 32'd24;});
   finish_item(req);
  endtask
 endclass
@@ -51,10 +51,10 @@ class write_read_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a ==1; wait_d ==2; flag ==2'b01; AWADDR == 32'd20;ARADDR == 32'd20; WSTRB== 4'b1111;});
+   assert(req.randomize() with {wait_a ==1; wait_d ==10; flag ==2'b01; AWADDR == 32'd20;ARADDR == 32'd20; WSTRB== 4'b1111;});
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_a ==1; wait_d ==2; flag == 2'b10; ARADDR == 32'd20;AWADDR == 32'd20;});
+   assert(req.randomize() with {wait_a ==11; wait_d ==2; flag == 2'b10; ARADDR == 32'd20;AWADDR == 32'd20;});
   finish_item(req);
  endtask
 endclass
@@ -235,6 +235,9 @@ class err_priority_seq extends uvm_sequence#(trans);
   start_item(req);
    assert(req.randomize() with {wait_a ==1; wait_d ==2; AWVALID ==1;WVALID ==1; flag ==2'b01; AWADDR == 32'd78; WSTRB== 4'b1111;});
   finish_item(req);
+ start_item(req);
+   assert(req.randomize() with {wait_a==2; ARVALID ==1; flag==2'b10; ARADDR==32'd78;});
+ finish_item(req);
  endtask
 endclass
 
@@ -245,11 +248,11 @@ class prot_seq extends uvm_sequence#(trans);
  endfunction
  task body();
   req=trans::type_id::create("req");
-  //for(int i=0;i<8;i++) begin
+  for(int i=0;i<8;i++) begin
   start_item(req);
-   assert(req.randomize() with {wait_a == 1; wait_d == 2; AWPROT ==3'd4; flag == 2'b11; AWVALID ==1;AWADDR ==32'd12;});
+   assert(req.randomize() with {wait_a == 1; wait_d == 2; AWPROT ==i; flag == 2'b01; AWVALID ==1;AWADDR ==32'd12;});
   finish_item(req);
-  //end
+  end
  endtask
 endclass
 
@@ -304,77 +307,5 @@ class simultaneous_addr_seq extends uvm_sequence #(trans);
  endtask
 endclass
 
-/*
 
-class write_delay_addr extends uvm_sequence#(trans);
- `uvm_object_utils(write_delay_addr)
- function new( string name= "write_delay_addr");
-   super.new(name);
- endfunction
- task body();
-  req=trans::type_id::create("req");
-  start_item(req);
-  assert(req.randomize() with {wait_a ==2; wait_d ==0; WVALID ==1; flag ==2'b01; AWADDR == 32'd08; WSTRB== 4'b1111;});
-  finish_item(req);
- endtask
-endclass
-
-class write_delay_data extends uvm_sequence#(trans);
- `uvm_object_utils(write_delay_data)
- function new( string name= "write_delay_data");
-   super.new(name);
- endfunction
- task body();
-  req=trans::type_id::create("req");
-  start_item(req);
-  assert(req.randomize() with {wait_a ==0; wait_d == 4; WVALID ==1; flag ==2'b01; AWADDR == 32'd04; WSTRB== 4'b1111;});
-  finish_item(req);
- endtask
-endclass
-
-class read_delay_addr extends uvm_sequence#(trans);
- `uvm_object_utils(read_delay_addr)
- function new( string name= "read_delay_addr");
-   super.new(name);
- endfunction
- task body();
-  req=trans::type_id::create("req");
-  start_item(req);
-  assert(req.randomize() with {wait_a == 3; wait_d == 0;flag == 2'b10; ARADDR == 32'd24;});
-  finish_item(req);
- endtask
-endclass
-
-class backtoback_write_delay extends uvm_sequence#(trans);
- `uvm_object_utils(backtoback_write_delay)
- function new( string name= "backtoback_write_delay");
-   super.new(name);
- endfunction
-
- task body();
-  req=trans::type_id::create("req");
-  repeat(10) begin
-  start_item(req);
-  assert(req.randomize() with {wait_a ==2; wait_d ==3; flag ==2'b01; WSTRB== 4'b1111;});
-  finish_item(req);
-  end
- endtask
-endclass
-
-class backtoback_read_delay extends uvm_sequence#(trans);
- `uvm_object_utils(backtoback_read_delay )
- function new( string name= "backtoback_read_delay ");
-   super.new(name);
- endfunction
- task body();
-  req=trans::type_id::create("req");
-  repeat(10) begin
-  start_item(req);
-  assert(req.randomize() with {wait_a == 3; wait_d == 3; flag == 2'b10; });
-  finish_item(req);
-  end
- endtask
-endclass
-
-*/
 

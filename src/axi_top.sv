@@ -1,6 +1,7 @@
 `include "defines.svh"
 `include "axi_interface.sv"
 `include "axi4_lite_slave.v"
+`include "axi_assertion.sv"
 `include "axi_package.sv"
 module top();
  import uvm_pkg::*;
@@ -13,6 +14,29 @@ axi4_lite_slave duv(.ACLK(duv_if.ACLK),.ARESETn( duv_if.ARESETn),.AWADDR(duv_if.
     .AWREADY(duv_if.AWREADY),.WDATA(duv_if.WDATA),.WSTRB(duv_if.WSTRB),.WVALID(duv_if.WVALID),.WREADY(duv_if.WREADY),.BRESP(duv_if.BRESP),
     .BVALID(duv_if.BVALID),.BREADY(duv_if.BREADY),.ARADDR(duv_if.ARADDR),.ARPROT(duv_if.ARPROT),.ARVALID(duv_if.ARVALID),.ARREADY(duv_if.ARREADY),
     .RDATA(duv_if.RDATA),.RRESP(duv_if.RRESP),.RVALID(duv_if.RVALID),.RREADY(duv_if.RREADY));
+
+bind axi4_lite_slave  axi_assertion assertion
+(.ACLK(ACLK),
+.ARESETn(ARESETn),
+.AWADDR(AWADDR),
+.AWPROT(AWPROT),
+.AWVALID(AWVALID),
+.AWREADY(AWREADY),
+.WDATA(WDATA),
+.WSTRB(WSTRB),
+.WVALID(WVALID),
+.WREADY(WREADY),
+.BRESP(BRESP),
+.BVALID(BVALID),
+.BREADY(BREADY),
+.ARADDR(ARADDR),
+.ARPROT(ARPROT),
+.ARVALID(ARVALID),
+.ARREADY(ARREADY),
+.RDATA(RDATA),
+.RRESP(RRESP),
+.RVALID(RVALID),
+.RREADY(RREADY));
 
  initial begin
   ARESETn = 0;
