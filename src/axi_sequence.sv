@@ -138,7 +138,16 @@ class araddr_out_of_range_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a ==1; flag ==2'b10; ARADDR == 32'hFFFF_FFFC; });
+   assert(req.randomize() with {wait_a ==2; wait_d ==1; WDATA == 32'd20; flag ==2'b01; AWADDR == 32'h3C; WSTRB== 4'b1111;});
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with {wait_a ==2; wait_d ==1; flag ==2'b10; ARADDR == 32'h3C;});
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with {wait_a ==2; wait_d ==1; flag ==2'b01; AWADDR == 32'hFFFF_FFFC; WSTRB== 4'b1111;});
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with {wait_a ==2; wait_d ==1; flag ==2'b10; ARADDR == 32'h3C;});
   finish_item(req);
  endtask
 endclass

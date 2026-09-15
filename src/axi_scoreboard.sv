@@ -61,7 +61,7 @@ class axi_scoreboard extends uvm_scoreboard;
      if(t.ARADDR > 32'h3C )
       begin
        t.RRESP   = 2'b11;
-       //t.RDATA    = 0;
+       t.RDATA    = 0;
       end
     else if(t.ARADDR>= 32'h34 && t.ARADDR <= 32'h38)
       begin
