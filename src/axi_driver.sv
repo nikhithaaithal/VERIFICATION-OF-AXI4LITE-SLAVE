@@ -44,20 +44,20 @@ task write_transaction(trans t);
  fork
   begin
     repeat(t.wait_a) @(vif.drv_cb);
-     wac(t);
+     wac(t); //write address channel
   end
   begin
    repeat(t.wait_d) @(vif.drv_cb); 
-   wdc(t);
+   wdc(t);//write data channel
   end
  join
- wrc(t);
+ wrc(t);//write response channel
 endtask
 
 task read_transaction(trans t);
  repeat(t.wait_a) @(vif.drv_cb);
- rac(t);
- rdc(t);
+ rac(t);//read address channel
+ rdc(t);//read data channel
 endtask
 
 task wac(trans t);

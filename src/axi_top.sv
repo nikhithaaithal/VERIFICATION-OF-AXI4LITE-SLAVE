@@ -41,29 +41,21 @@ bind axi4_lite_slave  axi_assertion assertion
  initial begin
   ARESETn = 0;
   #7;
-  ARESETn = 1;
+  ARESETn =1;
+  #10;
+  ARESETn = 0;
+  #10;
+  ARESETn =1;
  end
  initial begin
    ACLK=0;
   forever #5 ACLK = ~ACLK;
  end
 
-  initial begin
-    $dumpfile("waves.vcd");
-    $dumpvars(0, top);
-  end
  initial begin
- uvm_config_db#(virtual axi_interface.DRV)::set(
-      null, "*", "interface", duv_if
-  );
-
-  uvm_config_db#(virtual axi_interface.MON_INP)::set(
-      null, "*", "interface", duv_if
-  );
-
-  uvm_config_db#(virtual axi_interface.MON_OUT)::set(
-      null, "*", "interface", duv_if
-  ); 
-   run_test();
+ uvm_config_db#(virtual axi_interface.DRV)::set(null, "*", "interface", duv_if);
+ uvm_config_db#(virtual axi_interface.MON_INP)::set(null, "*", "interface", duv_if);
+ uvm_config_db#(virtual axi_interface.MON_OUT)::set(null, "*", "interface", duv_if); 
+ run_test();
  end
 endmodule

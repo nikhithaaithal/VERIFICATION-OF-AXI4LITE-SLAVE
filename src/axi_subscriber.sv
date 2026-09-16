@@ -17,7 +17,13 @@ class axi_subscriber extends uvm_subscriber #(trans);
 } 
 
  wstrb_cp:coverpoint tr.WSTRB{
- bins b2[]={[4'b0000:4'b1111]};}
+ bins b[]={[4'b0000:4'b1111]};}
+
+ awprot_cp:coverpoint tr.AWPROT{
+ bins b[]={[3'b000:3'b111]};}
+
+ arprot_cp:coverpoint tr.ARPROT{
+ bins b[]={[3'b000:3'b111]};}
 
  araddr_cp:coverpoint tr.ARADDR{
   bins b1 = {[32'h00000000 : 32'h00000024]};

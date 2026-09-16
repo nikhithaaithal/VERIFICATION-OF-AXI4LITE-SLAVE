@@ -31,7 +31,7 @@ module axi_assertion (
 
 property p1;
 @(posedge ACLK) disable iff (!ARESETn)
-AWVALID && !AWREADY |=> AWVALID;
+AWVALID && AWREADY |=> !AWVALID;
 endproperty
 assert property(p1)
  $display("Assertion Passed:p1");
@@ -41,7 +41,7 @@ else
 
 property p2;
 @(posedge ACLK) disable iff (!ARESETn) 
-WVALID && !WREADY |=> WVALID ;
+WVALID && WREADY |=> !WVALID ;
 endproperty
 assert property (p2)
  $display("Assertion Passed:p2");
@@ -50,7 +50,7 @@ else
 
 property p3;
 @(posedge ACLK) disable iff (!ARESETn)
-BVALID && !BREADY |=> BVALID ;
+BVALID && BREADY |=> !BVALID ;
 endproperty
 assert property(p3)
  $display("Assertion Passed:p3");
@@ -60,14 +60,14 @@ else
 
 property p4;
 @(posedge ACLK) disable iff (!ARESETn)
-ARVALID && !ARREADY |=> ARVALID ;
+ARVALID && ARREADY |=> !ARVALID ;
 endproperty
 assert property(p4) $display("Assertion Passed :p4");
  else $error("Read Address Handshake Assertion Failed");
 
 property p5;
 @(posedge ACLK) disable iff (!ARESETn)
-RVALID && !RREADY |=> RVALID ;
+RVALID && RREADY |=> !RVALID ;
 endproperty
 assert property(p5)
  $display("Assertion Passed :p5");
@@ -100,7 +100,7 @@ assert property(p8)
 
 property p9;
 @(posedge ACLK)disable iff (!ARESETn)
-ARVALID && ARREADY &&(ARADDR>32'h34 && ARADDR<32'h38) |->##[1:$]( RVALID && RRESP == 2'b10);
+ARVALID && ARREADY &&(ARADDR>=32'h34 && ARADDR<=32'h38) |->##[1:$]( RVALID && RRESP == 2'b10);
 endproperty
 assert property(p9)
 $display("Assertion Passed:p9");
@@ -115,3 +115,4 @@ assert property(p10)
  else $error("Address Write only");
 
 endmodule
+
