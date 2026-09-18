@@ -83,26 +83,26 @@ class axi_scoreboard extends uvm_scoreboard;
  task check_res(trans ch);
    if(inp.flag[0] && ch.flag[0] ) begin
     if(ch.BRESP == inp.BRESP) begin
-      `uvm_info(get_type_name(), $sformatf("BRESP correct: BRESP = %0d, exp_BRESP=%0d wstrb =%d", ch.BRESP, inp.BRESP,inp.WSTRB), UVM_LOW)
+      `uvm_info(get_type_name(), $sformatf("BRESP correct: BRESP = %0b, exp_BRESP=%0b wstrb =%d", ch.BRESP, inp.BRESP,inp.WSTRB), UVM_LOW)
     end
     else begin
-      `uvm_error(get_type_name(), $sformatf("WRONG BRESP: BRESP = %0d, exp_BRESP=%0d", ch.BRESP, inp.BRESP))
+      `uvm_error(get_type_name(), $sformatf("WRONG BRESP: BRESP = %0b, exp_BRESP=%0b", ch.BRESP, inp.BRESP))
     end
   end
   
    if(inp.flag[1] && ch.flag[1])begin
      
     if(ch.RDATA == inp.RDATA) begin
-      `uvm_info(get_type_name(), $sformatf("RDATA correct: RDATA = %0d, exp_RDATA=%0d", ch.RDATA, inp.RDATA), UVM_LOW)
+      `uvm_info(get_type_name(), $sformatf("RDATA correct: RDATA = %0h, exp_RDATA=%0h", ch.RDATA, inp.RDATA), UVM_LOW)
     end
     else 
-      `uvm_error(get_type_name(), $sformatf("WRONG RDATA: RDATA = %0d, exp_RDATA=%0d, ARADDR= %d", ch.RDATA, inp.RDATA,inp.ARADDR))
+      `uvm_error(get_type_name(), $sformatf("WRONG RDATA: RDATA = %0h, exp_RDATA=%0h, ARADDR= %d", ch.RDATA, inp.RDATA,inp.ARADDR))
    
    if(ch.RRESP == inp.RRESP) begin
-      `uvm_info(get_type_name(), $sformatf("RRESP correct: RRESP = %0d, exp_RRESP=%0d", ch.RRESP, inp.RRESP), UVM_LOW)
+      `uvm_info(get_type_name(), $sformatf("RRESP correct: RRESP = %0b, exp_RRESP=%0b", ch.RRESP, inp.RRESP), UVM_LOW)
     end
     else begin
-      `uvm_error(get_type_name(), $sformatf("WRONG RRESP: RRESP = %0d, exp_RRESP=%0d", ch.RRESP, inp.RRESP))
+      `uvm_error(get_type_name(), $sformatf("WRONG RRESP: RRESP = %0b, exp_RRESP=%0b", ch.RRESP, inp.RRESP))
     end
     
   end

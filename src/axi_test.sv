@@ -429,7 +429,7 @@ class awaddr_unaligned_readcheck extends axi_test;
    phase.drop_objection(this);
   endtask
 endclass
-
+ /*
 class regression extends axi_test;
   `uvm_component_utils(regression)
 
@@ -468,26 +468,15 @@ class regression extends axi_test;
 
     phase.raise_objection(this);
 
-    seq1 = axi_sequence::type_id::create("seq1");
-    seq1.start(env.agt1.seqr);
-    #20;
-    $display("completed 1");
-
-    seq2 = read_seq::type_id::create("seq2");
-    seq2.start(env.agt1.seqr);
-    #20;
-    $display("completed 2");
-
-    seq3 = write_strobe_seq::type_id::create("seq3");
-    seq3.start(env.agt1.seqr);
-    #20;
-    $display("completed 3");
-   
+     
     seq4 = write_read_seq::type_id::create("seq4");
     seq4.start(env.agt1.seqr);
     #20;
-    $display("completed 4");
     
+    seq3 = write_strobe_seq::type_id::create("seq3");
+    seq3.start(env.agt1.seqr);
+    #20;
+ 
     seq5 = read_write_seq::type_id::create("seq5");
     seq5.start(env.agt1.seqr);
     #20;
@@ -515,7 +504,7 @@ class regression extends axi_test;
     seq11 = araddr_unaligned_seq::type_id::create("seq11");
     seq11.start(env.agt1.seqr);
     #20;
-      
+
     seq12 = write_ro_seq::type_id::create("seq12");
     seq12.start(env.agt1.seqr);
     #20;
@@ -540,7 +529,7 @@ class regression extends axi_test;
     seq18 = prot_seq::type_id::create("seq18");
     seq18.start(env.agt1.seqr);
     #20;
-     
+    
     seq19 = backtoback_write_addr_seq::type_id::create("seq19");
     seq19.start(env.agt1.seqr);
     #20;
@@ -549,12 +538,23 @@ class regression extends axi_test;
     seq20.start(env.agt1.seqr);
     #20;
 
-    seq21 = awaddr_unaligned_readcheck_seq::type_id::create("seq21s");
+    seq21 = awaddr_unaligned_readcheck_seq::type_id::create("seq21");
     seq21.start(env.agt1.seqr);
     #20;
+
+
+    seq1 = axi_sequence::type_id::create("seq1");
+    seq1.start(env.agt1.seqr);
+    #20;
+
+    seq2 = read_seq::type_id::create("seq2");
+    seq2.start(env.agt1.seqr);
+    #20;
+    
      
     phase.drop_objection(this);
 
   endtask
-
+    
 endclass
+ */

@@ -13,9 +13,7 @@ function void build_phase(uvm_phase phase);
  endfunction
 
 task run_phase(uvm_phase phase);
-  wait(vif.drv_cb.ARESETn === 1'b1);
-  @(vif.drv_cb); 
-  $display("[%0t]:Reset high",$time);
+     @(vif.drv_cb);
 forever begin
   seq_item_port.get_next_item(req);
   $display("driver started");

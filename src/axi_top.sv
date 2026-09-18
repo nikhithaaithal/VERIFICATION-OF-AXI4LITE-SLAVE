@@ -42,9 +42,9 @@ bind axi4_lite_slave  axi_assertion assertion
   ARESETn = 0;
   #7;
   ARESETn =1;
-  #10;
+  #1;
   ARESETn = 0;
-  #10;
+  #1;
   ARESETn =1;
  end
  initial begin

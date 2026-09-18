@@ -34,7 +34,7 @@ property p1;
 AWVALID && AWREADY |=> !AWVALID;
 endproperty
 assert property(p1)
- $display("Assertion Passed:p1");
+ //$display("Assertion Passed:p1");
 else
  $error(" Write Address Handshake Assertion Failed");
 
@@ -44,7 +44,7 @@ property p2;
 WVALID && WREADY |=> !WVALID ;
 endproperty
 assert property (p2)
- $display("Assertion Passed:p2");
+ //$display("Assertion Passed:p2");
 else
  $error("Data Handshake Assertion Failed");
 
@@ -53,7 +53,7 @@ property p3;
 BVALID && BREADY |=> !BVALID ;
 endproperty
 assert property(p3)
- $display("Assertion Passed:p3");
+ //$display("Assertion Passed:p3");
 else
  $error("Write Response Handshake Assertion Failed");
 
@@ -62,7 +62,8 @@ property p4;
 @(posedge ACLK) disable iff (!ARESETn)
 ARVALID && ARREADY |=> !ARVALID ;
 endproperty
-assert property(p4) $display("Assertion Passed :p4");
+assert property(p4) 
+   //$display("Assertion Passed :p4");
  else $error("Read Address Handshake Assertion Failed");
 
 property p5;
@@ -70,7 +71,7 @@ property p5;
 RVALID && RREADY |=> !RVALID ;
 endproperty
 assert property(p5)
- $display("Assertion Passed :p5");
+ //$display("Assertion Passed :p5");
  else $error("Read Response Handshake Assertion Failed");
 
 property p6;
@@ -78,7 +79,7 @@ property p6;
 AWVALID && AWREADY && AWADDR[1:0]!=2'b00 |->##[1:$] ( BVALID && BRESP == 2'b10);
 endproperty
 assert property(p6)
-$display("Assertion Passed:p6");
+//$display("Assertion Passed:p6");
  else $error("Address unalighned");
 
 property p7;
@@ -86,7 +87,7 @@ property p7;
 ARVALID && ARREADY &&(ARADDR[1:0]!=2'b00) |->##[1:$](RVALID && RRESP == 2'b10);
 endproperty
 assert property(p7)
- $display("Assertion Passed:p7");
+ //$display("Assertion Passed:p7");
  else $error("Address unalighned");
 
 
@@ -95,7 +96,7 @@ property p8;
 AWVALID && AWREADY && (AWADDR>32'h28 && AWADDR<32'h30) |->##[1:$](BVALID && BRESP == 2'b10);
 endproperty
 assert property(p8)
- $display("Assertion Passed:p8");
+ //$display("Assertion Passed:p8");
  else $error("Address Read only");
 
 property p9;
@@ -103,7 +104,7 @@ property p9;
 ARVALID && ARREADY &&(ARADDR>=32'h34 && ARADDR<=32'h38) |->##[1:$]( RVALID && RRESP == 2'b10);
 endproperty
 assert property(p9)
-$display("Assertion Passed:p9");
+//$display("Assertion Passed:p9");
  else $error("Address Write only");
 
 property p10;
@@ -111,7 +112,16 @@ property p10;
 (ARVALID && ARREADY && ARADDR>32'h3C || AWVALID && AWREADY && AWADDR>32'h3C)  |->##[1:$](RVALID && RRESP == 2'b11 || BVALID && BRESP == 2'b11);
 endproperty
 assert property(p10)
- $display("Assertion Passed:p10");
+ //$display("Assertion Passed:p10");
+ else $error("Address Write only");
+
+
+property p11;
+@(posedge ACLK) 
+(!ARESETn)|-> (!AWREADY && !WREADY && !BVALID && !ARREADY && !RVALID && BRESP==0 && RRESP==0 && RDATA==0);
+endproperty
+assert property(p11)
+ //$display("Assertion Passed:p11");
  else $error("Address Write only");
 
 endmodule

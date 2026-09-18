@@ -23,6 +23,10 @@ forever begin
  collect_data();
  if(address && data) 
   begin
+   `uvm_info(get_type_name(),
+      $sformatf("WRITE : AWADDR=%0d AWPROT=%0d WDATA=%0h WSTRB=%0d ",
+                 mon_wr.AWADDR, mon_wr.AWPROT, mon_wr.WDATA, mon_wr.WSTRB),
+      UVM_LOW)
    mon_port.write(mon_wr);
    address = 0;
    data = 0;
@@ -30,9 +34,12 @@ forever begin
   end
   if(read)
    begin
+   `uvm_info(get_type_name(),
+      $sformatf("READ : ARADDR=%0d ARPROT=%0d ",
+                 mon_rd.ARADDR, mon_rd.ARPROT),
+      UVM_LOW)
    mon_port.write(mon_rd);
     read = 0;
-    mon_rd=null;
    end
 end
 endtask
@@ -58,7 +65,6 @@ task collect_data();
   end
   if(vif.mon_inp_cb.ARVALID && vif.mon_inp_cb.ARREADY)
    begin
-      if(mon_rd==null)
      mon_rd=trans::type_id::create("mon_rd",this);
      mon_rd.ARADDR  = vif.mon_inp_cb.ARADDR;
      mon_rd.ARPROT  = vif.mon_inp_cb.ARPROT;

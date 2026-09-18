@@ -25,10 +25,12 @@ class trans extends uvm_sequence_item;
  logic RVALID;
  constraint c1 { flag inside {[1:3]};}
  constraint c2 { soft AWPROT == 0; soft ARPROT == 0;}
+ constraint c3 {wait_a != wait_d;}
+
 `uvm_object_utils_begin(trans)
  `uvm_field_int(AWADDR,UVM_ALL_ON|UVM_DEC)
  `uvm_field_int(AWVALID,UVM_ALL_ON|UVM_DEC)
- `uvm_field_int(WDATA,UVM_ALL_ON|UVM_DEC)
+ `uvm_field_int(WDATA,UVM_ALL_ON|UVM_HEX)
  `uvm_field_int(WSTRB,UVM_ALL_ON|UVM_DEC)
  `uvm_field_int(WVALID,UVM_ALL_ON|UVM_DEC)
  `uvm_field_int(BREADY,UVM_ALL_ON|UVM_DEC)
@@ -40,7 +42,7 @@ class trans extends uvm_sequence_item;
  `uvm_field_int(BRESP,UVM_ALL_ON|UVM_DEC)
  `uvm_field_int(BVALID,UVM_ALL_ON|UVM_DEC)
  `uvm_field_int(ARREADY,UVM_ALL_ON|UVM_DEC)
- `uvm_field_int(RDATA,UVM_ALL_ON|UVM_DEC)
+ `uvm_field_int(RDATA,UVM_ALL_ON|UVM_HEX)
  `uvm_field_int(RRESP,UVM_ALL_ON|UVM_DEC)
  `uvm_field_int(RVALID,UVM_ALL_ON|UVM_DEC)
 `uvm_object_utils_end
