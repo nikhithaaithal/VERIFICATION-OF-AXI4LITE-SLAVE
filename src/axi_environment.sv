@@ -22,14 +22,6 @@ class axi_environment extends uvm_env;
    super.connect_phase(phase);
    agt1.mon_inp.mon_port.connect(scb.inp_fifo.analysis_export);
    agt2.mon_out.mon_port.connect(scb.out_fifo.analysis_export);
-/*
-   agt1.mon_inp.mon_port_wr.connect(scb.inp_fifo.analysis_export);
-   agt2.mon_out.mon_port_wr.connect(scb.out_fifo.analysis_export);
-   agt1.mon_inp.mon_port_rd.connect(scb.inp_fifo.analysis_export);
-   agt2.mon_out.mon_port_rd.connect(scb.out_fifo.analysis_export);
-
-*/
-
    agt1.mon_inp.mon_port.connect(sub.analysis_export);
  endfunction
 

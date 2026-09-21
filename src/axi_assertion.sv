@@ -1,5 +1,5 @@
 `include "defines.svh"
-module axi_assertion (
+interface axi_assertion (
  
   input bit ACLK,
   input logic ARESETn,
@@ -97,7 +97,7 @@ AWVALID && AWREADY && (AWADDR>32'h28 && AWADDR<32'h30) |->##[1:$](BVALID && BRES
 endproperty
 assert property(p8)
  //$display("Assertion Passed:p8");
- else $error("Address Read only");
+ else $error("Address is Read only can't Write");
 
 property p9;
 @(posedge ACLK)disable iff (!ARESETn)
@@ -105,7 +105,7 @@ ARVALID && ARREADY &&(ARADDR>=32'h34 && ARADDR<=32'h38) |->##[1:$]( RVALID && RR
 endproperty
 assert property(p9)
 //$display("Assertion Passed:p9");
- else $error("Address Write only");
+ else $error("Address is Write only can't Read ");
 
 property p10;
 @(posedge ACLK) disable iff (!ARESETn)
@@ -113,7 +113,7 @@ property p10;
 endproperty
 assert property(p10)
  //$display("Assertion Passed:p10");
- else $error("Address Write only");
+ else $error("Writing to the Address Out of Range");
 
 
 property p11;
@@ -122,7 +122,31 @@ property p11;
 endproperty
 assert property(p11)
  //$display("Assertion Passed:p11");
- else $error("Address Write only");
+ else $error("Reset Failed");
 
-endmodule
+
+property p12;
+@(posedge ACLK) disable iff (!ARESETn)
+AWVALID && AWREADY  |-> ##[1:$] BVALID;
+endproperty
+assert property(p12)
+ //$display("Assertion Passed:p12");
+ else $error("Failed in response handshake ");
+
+property p12_2;
+@(posedge ACLK) disable iff (!ARESETn)
+WVALID && WREADY  |-> ##[1:$] BVALID;
+endproperty
+assert property(p12_2)
+ //$display("Assertion Passed:p12_2");
+ else $error("Failed in response handshake ");
+
+property p13;
+@(posedge ACLK) disable iff (!ARESETn)
+ARVALID && ARREADY |-> ##[1:$] RVALID ;
+endproperty
+assert property(p13)
+ //$display("Assertion Passed:p13");
+ else $error("Failed in response handshake");
+endinterface
 

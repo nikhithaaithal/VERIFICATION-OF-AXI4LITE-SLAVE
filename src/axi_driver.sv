@@ -13,7 +13,7 @@ function void build_phase(uvm_phase phase);
  endfunction
 
 task run_phase(uvm_phase phase);
-     @(vif.drv_cb);
+@(vif.drv_cb);
 forever begin
   seq_item_port.get_next_item(req);
   $display("driver started");
@@ -42,23 +42,26 @@ task write_transaction(trans t);
  fork
   begin
     repeat(t.wait_a) @(vif.drv_cb);
-     wac(t); //write address channel
+      @(vif.drv_cb);
+      write_address_channel(t);
   end
   begin
-   repeat(t.wait_d) @(vif.drv_cb); 
-   wdc(t);//write data channel
+   repeat(t.wait_d) @(vif.drv_cb);
+     @(vif.drv_cb); 
+     write_data_channel(t);
   end
  join
- wrc(t);//write response channel
+ write_response_channel(t);
 endtask
 
 task read_transaction(trans t);
- repeat(t.wait_a) @(vif.drv_cb);
- rac(t);//read address channel
- rdc(t);//read data channel
+ repeat(t.wait_r) @(vif.drv_cb);
+ @(vif.drv_cb);
+ read_address_channel(t);
+ read_data_channel(t);
 endtask
 
-task wac(trans t);
+task write_address_channel(trans t);
   $display("[%0t] WAC: Starting AW transaction", $time);
  vif.drv_cb.AWADDR  <= t.AWADDR;
  vif.drv_cb.AWPROT  <=t.AWPROT;
@@ -70,7 +73,7 @@ task wac(trans t);
  vif.drv_cb.AWVALID <= 1'b0;
 endtask
 
-task wdc(trans t);
+task write_data_channel(trans t);
  $display("[%0t] WDC: Starting W transaction", $time);
  vif.drv_cb.WDATA  <= t.WDATA;
  vif.drv_cb.WSTRB  <= t.WSTRB;
@@ -83,7 +86,7 @@ task wdc(trans t);
  vif.drv_cb.WVALID <= 1'b0;
  endtask
 
-task wrc(trans t);
+task write_response_channel(trans t);
   $display("[%0t] WRC: Starting WR transaction", $time);
  vif.drv_cb.BREADY <= 1'b1;
   
@@ -96,7 +99,7 @@ task wrc(trans t);
   $display("[%0t] WRC: BVALID received", $time);
 endtask
 
-task rac(trans t);
+task read_address_channel(trans t);
   $display("[%0t] RAC: Starting RA transaction", $time);
  vif.drv_cb.ARADDR  <= t.ARADDR;
  vif.drv_cb.ARVALID <= 1'b1;
@@ -109,8 +112,8 @@ task rac(trans t);
 endtask
   
 
-task rdc(trans t);
-  $display("[%0t] RDC: Starting WD transaction", $time);
+task read_data_channel(trans t);
+  $display("[%0t] RDC: Starting RD transaction", $time);
  vif.drv_cb.RREADY <= 1'b1;
  do
   @(vif.drv_cb);

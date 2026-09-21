@@ -24,7 +24,7 @@ forever begin
  if(address && data) 
   begin
    `uvm_info(get_type_name(),
-      $sformatf("WRITE : AWADDR=%0d AWPROT=%0d WDATA=%0h WSTRB=%0d ",
+      $sformatf("WRITE : AWADDR=%0h AWPROT=%0h WDATA=%0h WSTRB=%0h",
                  mon_wr.AWADDR, mon_wr.AWPROT, mon_wr.WDATA, mon_wr.WSTRB),
       UVM_LOW)
    mon_port.write(mon_wr);
@@ -35,7 +35,7 @@ forever begin
   if(read)
    begin
    `uvm_info(get_type_name(),
-      $sformatf("READ : ARADDR=%0d ARPROT=%0d ",
+      $sformatf("READ : ARADDR=%0h ARPROT=%0h ",
                  mon_rd.ARADDR, mon_rd.ARPROT),
       UVM_LOW)
    mon_port.write(mon_rd);
