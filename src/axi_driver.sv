@@ -58,7 +58,7 @@ task read_transaction(trans t);
  repeat(t.wait_r) @(vif.drv_cb);
  @(vif.drv_cb);
  read_address_channel(t);
- read_data_channel(t);
+ read_response_channel(t);
 endtask
 
 task write_address_channel(trans t);
@@ -112,14 +112,14 @@ task read_address_channel(trans t);
 endtask
   
 
-task read_data_channel(trans t);
-  $display("[%0t] RDC: Starting RD transaction", $time);
+task read_response_channel(trans t);
+  $display("[%0t] RRC: Starting RR transaction", $time);
  vif.drv_cb.RREADY <= 1'b1;
  do
   @(vif.drv_cb);
   while(!vif.drv_cb.RVALID);
   t.RRESP = vif.drv_cb.RRESP;
   vif.drv_cb.RREADY <= 1'b0;
-  $display("[%0t] RDC: RVALID received", $time);
+  $display("[%0t] RRC: RVALID received", $time);
 endtask
 endclass

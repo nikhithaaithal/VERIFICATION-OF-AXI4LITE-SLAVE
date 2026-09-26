@@ -22,12 +22,12 @@ class read_seq extends uvm_sequence#(trans);
   req=trans::type_id::create("req");
   repeat(50) begin
    start_item(req);
-     assert(req.randomize() with {wait_a ==8; wait_d ==1; flag ==2'b01;});
+     assert(req.randomize() with { flag ==2'b01;});
    finish_item(req);
   end
   repeat(50) begin
     start_item(req);
-     assert(req.randomize() with {wait_r == 6;  flag == 2'b10; });
+     assert(req.randomize() with { flag == 2'b10; });
     finish_item(req);
   end
  endtask
@@ -42,10 +42,13 @@ class write_strobe_seq extends uvm_sequence#(trans);
   req=trans::type_id::create("req");
   for(int i=0;i<16;i++) begin
   start_item(req);
-    assert(req.randomize() with {wait_a == 1; wait_d == 5; flag == 2'b01; WSTRB ==i;  AWADDR == i*4;});
+    assert(req.randomize() with { flag == 2'b01; WSTRB ==i;  AWADDR == i*4;});
   finish_item(req);
   start_item(req);
-    assert(req.randomize() with {wait_r == 1; flag == 2'b10; ARADDR == i*4;});
+    assert(req.randomize() with { flag == 2'b10; ARADDR == i*4;});
+  finish_item(req);
+  start_item(req);
+    assert(req.randomize() with {flag == 2'b01; WSTRB ==8;  });
   finish_item(req);
   end
  endtask
@@ -60,10 +63,10 @@ class write_read_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a ==1; wait_d ==2; flag ==2'b01; AWADDR == 32'h14; });
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h14; });
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_r ==1; flag == 2'b10; ARADDR == 32'h14;});
+   assert(req.randomize() with { flag == 2'b10; ARADDR == 32'h14;});
   finish_item(req);
  endtask
 endclass
@@ -76,16 +79,16 @@ class read_write_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
 start_item(req);
-   assert(req.randomize() with {wait_a ==1; wait_d ==10; flag ==2'b01; AWADDR == 32'h10; });
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h10; });
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_r ==11;  flag == 2'b10; ARADDR == 32'h10;});
+   assert(req.randomize() with { flag == 2'b10; ARADDR == 32'h10;});
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_a ==1; wait_d ==2; flag ==2'b01; AWADDR == 32'h10;WDATA == 32'h100; });
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h10;WDATA == 32'h100; });
   finish_item(req);
    start_item(req);
-   assert(req.randomize() with {wait_r == 1; flag == 2'b10; ARADDR == 32'h10;});
+   assert(req.randomize() with { flag == 2'b10; ARADDR == 32'h10;});
   finish_item(req);
  endtask
 endclass
@@ -98,9 +101,9 @@ class backtoback_write_seq extends uvm_sequence#(trans);
 
  task body();
   req=trans::type_id::create("req");
-  repeat(20) begin
+  repeat(50) begin
   start_item(req);
-    assert(req.randomize() with {wait_a ==6; wait_d ==1; flag ==2'b01;});
+    assert(req.randomize() with { flag ==2'b01;});
   finish_item(req);
   end
  endtask
@@ -115,12 +118,12 @@ class backtoback_read_seq extends uvm_sequence#(trans);
   req=trans::type_id::create("req");
    for(int i=1;i<=10;i++) begin
   start_item(req);
-     assert(req.randomize() with {wait_a ==7; wait_d ==1; flag ==2'b01; WDATA ==i*8;  AWADDR == i * 4;});
+     assert(req.randomize() with { flag ==2'b01; WDATA ==i*8;  AWADDR == i * 4;});
   finish_item(req);
   end
    for(int i=1;i<=10;i++)begin
   start_item(req);
-     assert(req.randomize() with {wait_r == 2;  flag == 2'b10;  ARADDR == i * 4; });
+     assert(req.randomize() with { flag == 2'b10;  ARADDR == i * 4; });
   finish_item(req);
   end
  endtask
@@ -133,8 +136,14 @@ class awaddr_out_of_range_seq extends uvm_sequence#(trans);
  endfunction
  task body();
   req=trans::type_id::create("req");
+ start_item(req);
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'hFFFF_FFFC; });
+  finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_a ==2; wait_d ==1; flag ==2'b01; AWADDR == 32'hFFFF_FFFC; });
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'hAAAAAAAC; });
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h5555555C; });
   finish_item(req);
  endtask
 endclass
@@ -158,6 +167,15 @@ class araddr_out_of_range_seq extends uvm_sequence#(trans);
   start_item(req);
    assert(req.randomize() with {wait_r ==2;  flag ==2'b10; ARADDR == 32'h3C;});
   finish_item(req);
+  start_item(req);
+   assert(req.randomize() with {wait_r ==2;  flag ==2'b10; ARADDR == 32'hFFFF_FFFC;});
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with {wait_r ==2;  flag ==2'b10; ARADDR == 32'hAAAAAAAC;});
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with {wait_r ==2;  flag ==2'b10; ARADDR == 32'h5555555C;});
+  finish_item(req);
  endtask
 endclass
 
@@ -169,11 +187,18 @@ class awaddr_unaligned_seq extends uvm_sequence#(trans);
  endfunction
  task body();
   req=trans::type_id::create("req");
+
   start_item(req);
-   assert(req.randomize() with {wait_a ==2; wait_d ==5; flag ==2'b01; AWADDR == 1;});
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h1;});
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_r ==5;  flag ==2'b01; AWADDR == 32'd10;});
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h2;});
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h3;});
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h0;});
   finish_item(req);
  endtask
 endclass
@@ -186,7 +211,16 @@ class araddr_unaligned_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a ==8; flag ==2'b10; ARADDR == 32'hA; });
+   assert(req.randomize() with { flag ==2'b10; ARADDR == 32'hB; });
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with { flag ==2'b10; ARADDR == 32'hC; });
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with { flag ==2'b10; ARADDR == 32'hD; });
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with { flag ==2'b10; ARADDR == 32'hA; });
   finish_item(req);
  endtask
 endclass
@@ -197,11 +231,10 @@ class write_ro_seq extends uvm_sequence#(trans);
   function new( string name= "write_ro_seq");
    super.new(name);
  endfunction
-
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a ==9; wait_d ==1; flag ==2'b01; AWADDR == 32'h2C; });
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h2C; });
   finish_item(req);
  endtask
 endclass
@@ -214,7 +247,7 @@ class read_wo_seq extends uvm_sequence #(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_r ==6; flag ==2'b10; ARADDR == 32'h34; });
+   assert(req.randomize() with { flag ==2'b10; ARADDR == 32'h34; });
   finish_item(req);
  endtask
 endclass
@@ -243,7 +276,6 @@ class simultaneous_addr_seq extends uvm_sequence #(trans);
   function new( string name= "simultaneous_addr_seq");
    super.new(name);
  endfunction
-
  task body();
   req=trans::type_id::create("req");
   start_item(req);
@@ -261,10 +293,16 @@ class err_priority_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a ==1; wait_d ==4;  flag ==2'b01; AWADDR == 32'h4E; });
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h4E; });
   finish_item(req);
  start_item(req);
-   assert(req.randomize() with {wait_r==2;  flag==2'b10; ARADDR==32'h4E;});
+   assert(req.randomize() with { flag==2'b10; ARADDR==32'h4E;});
+ finish_item(req);
+ start_item(req);
+  assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h4; });
+ finish_item(req);
+ start_item(req);
+   assert(req.randomize() with { flag==2'b10; ARADDR==32'h4;});
  finish_item(req);
  endtask
 endclass
@@ -278,12 +316,18 @@ class prot_seq extends uvm_sequence#(trans);
   req=trans::type_id::create("req");
   for(int i=0;i<8;i++) begin
   start_item(req);
-   assert(req.randomize() with {wait_a == 1; wait_d == 6; AWPROT ==i; flag == 2'b01; });
+   assert(req.randomize() with { AWPROT ==i; flag == 2'b01; });
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_r == 1; ARPROT ==i; flag == 2'b10; });
+   assert(req.randomize() with { ARPROT ==i; flag == 2'b10; });
   finish_item(req);
   end
+  start_item(req);
+   assert(req.randomize() with { AWPROT ==3; flag == 2'b01; });
+  finish_item(req);
+  start_item(req);
+   assert(req.randomize() with { ARPROT ==3; flag == 2'b10; });
+  finish_item(req);
  endtask
 endclass
 
@@ -298,7 +342,7 @@ class backtoback_write_addr_seq extends uvm_sequence#(trans);
   req=trans::type_id::create("req");
   repeat(3) begin
   start_item(req);
-    assert(req.randomize() with {wait_a ==5; wait_d ==2; flag ==2'b01; AWADDR == 32'h18;});
+    assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h18;});
   finish_item(req);
   end
  endtask
@@ -312,18 +356,15 @@ class backtoback_read_addr_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
    start_item(req);
-   assert(req.randomize() with {wait_a ==10; wait_d ==2;  flag ==2'b01; AWADDR == 32'h4; });
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h4; });
   finish_item(req);
    repeat(3) begin
   start_item(req);
-     assert(req.randomize() with {wait_r == 1; ARADDR == 32'h4; flag == 2'b10; });
+     assert(req.randomize() with { ARADDR == 32'h4; flag == 2'b10; });
   finish_item(req);
   end
  endtask
 endclass
-
-
-
 
 
 class awaddr_unaligned_readcheck_seq extends uvm_sequence#(trans);
@@ -334,16 +375,16 @@ class awaddr_unaligned_readcheck_seq extends uvm_sequence#(trans);
  task body();
   req=trans::type_id::create("req");
   start_item(req);
-   assert(req.randomize() with {wait_a ==7; wait_d ==1; flag ==2'b01; AWADDR == 32'h4;});
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h4;});
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_r ==2; flag ==2'b10; ARADDR == 32'h4; });
+   assert(req.randomize() with { flag ==2'b10; ARADDR == 32'h4; });
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_a ==2; wait_d ==1; flag ==2'b01; AWADDR == 32'h5;});
+   assert(req.randomize() with { flag ==2'b01; AWADDR == 32'h5;});
   finish_item(req);
   start_item(req);
-   assert(req.randomize() with {wait_r ==2; flag ==2'b10; ARADDR == 32'h4; });
+   assert(req.randomize() with { flag ==2'b10; ARADDR == 32'h4; });
   finish_item(req);
  endtask
 endclass

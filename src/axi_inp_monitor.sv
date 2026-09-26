@@ -2,19 +2,24 @@ class axi_inp_monitor extends uvm_monitor;
  `uvm_component_utils(axi_inp_monitor)
   trans mon_wr;
   trans mon_rd;
-  uvm_analysis_port #(trans) mon_port;
+  uvm_analysis_port #(trans) mon_port_wr;
+  uvm_analysis_port #(trans) mon_port_rd;
+  
   virtual axi_interface.MON_INP vif;
   bit address ;
   bit data;
   bit read;
+  
  function new(string name = "axi_inp_monitor", uvm_component parent);
    super.new(name,parent);
  endfunction
+  
  function void build_phase(uvm_phase phase);
    super.build_phase(phase);
    if(!uvm_config_db#(virtual axi_interface.MON_INP )::get( this,"","interface",vif))
     `uvm_fatal(get_type_name(),"Input monitor failed")
-   mon_port=new("mon_port",this);
+     mon_port_wr=new("mon_port_wr",this);
+     mon_port_rd=new("mon_port_rd",this);
  endfunction
 
 task run_phase (uvm_phase phase);
@@ -24,10 +29,10 @@ forever begin
  if(address && data) 
   begin
    `uvm_info(get_type_name(),
-      $sformatf("WRITE : AWADDR=%0h AWPROT=%0h WDATA=%0h WSTRB=%0h",
+      $sformatf("WRITE : AWADDR=%0d AWPROT=%0d WDATA=%0h WSTRB=%0d ",
                  mon_wr.AWADDR, mon_wr.AWPROT, mon_wr.WDATA, mon_wr.WSTRB),
       UVM_LOW)
-   mon_port.write(mon_wr);
+   mon_port_wr.write(mon_wr);
    address = 0;
    data = 0;
    mon_wr=null;
@@ -35,10 +40,10 @@ forever begin
   if(read)
    begin
    `uvm_info(get_type_name(),
-      $sformatf("READ : ARADDR=%0h ARPROT=%0h ",
+      $sformatf("READ : ARADDR=%0d ARPROT=%0d ",
                  mon_rd.ARADDR, mon_rd.ARPROT),
       UVM_LOW)
-   mon_port.write(mon_rd);
+   mon_port_rd.write(mon_rd);
     read = 0;
    end
 end
@@ -49,8 +54,8 @@ task collect_data();
   begin
      if(mon_wr==null)
       mon_wr=trans::type_id::create("mon_wr",this);
-     mon_wr.AWADDR  = vif.mon_inp_cb.AWADDR;
-     mon_wr.AWPROT  = vif.mon_inp_cb.AWPROT;
+      mon_wr.AWADDR  = vif.mon_inp_cb.AWADDR;
+      mon_wr.AWPROT  = vif.mon_inp_cb.AWPROT;
      address = 1;
      mon_wr.flag[0]= 1;
   end
@@ -58,10 +63,10 @@ task collect_data();
    begin
      if(mon_wr==null)
        mon_wr=trans::type_id::create("mon_wr",this);
-     mon_wr.WDATA  = vif.mon_inp_cb.WDATA;
-     mon_wr.WSTRB  = vif.mon_inp_cb.WSTRB;
-     data = 1;
-     mon_wr.flag[0]= 1;
+       mon_wr.WDATA  = vif.mon_inp_cb.WDATA;
+       mon_wr.WSTRB  = vif.mon_inp_cb.WSTRB;
+       data = 1;
+       mon_wr.flag[0]= 1;
   end
   if(vif.mon_inp_cb.ARVALID && vif.mon_inp_cb.ARREADY)
    begin

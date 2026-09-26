@@ -74,6 +74,7 @@ assert property(p5)
  //$display("Assertion Passed :p5");
  else $error("Read Response Handshake Assertion Failed");
 
+
 property p6;
 @(posedge ACLK) disable iff (!ARESETn)
 AWVALID && AWREADY && AWADDR[1:0]!=2'b00 |->##[1:$] ( BVALID && BRESP == 2'b10);

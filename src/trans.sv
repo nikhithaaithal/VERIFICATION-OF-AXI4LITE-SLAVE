@@ -23,7 +23,6 @@ class trans extends uvm_sequence_item;
  bit [1:0]BRESP;
  bit [1:0]RRESP;
  bit RVALID;
-//bit ARESETn;
  constraint c1 { flag inside {[1:3]};}
  constraint c2 { soft AWPROT == 0; soft ARPROT == 0;}
  constraint c3 {wait_a != wait_d;}
